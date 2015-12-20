@@ -1,0 +1,81 @@
+#! /bin/bash
+slist0=(meld vimdiff araxis bc3 gdiff opendiff)
+slist1=(kdiff3)
+if [[ $1 == "" ]]; then
+    echo "letool for git config (mergetool switcher) v0.1..."
+    echo "letool meld  (git df) for usage" 
+    echo ""
+    echo -e "git config --global merge.tool { \033[92m${slist0[*]} \033[93m${slist1[*]}\033[0m }"
+    echo "---current .gitconfig AS --8<---"
+    tail -4 ~/.gitconfig|grep --color -E 'tool =|$'
+    exit
+fi
+
+function _letool {
+cat ~/.letool
+}
+
+function remote_url {
+git remote -v
+echo "git remote set-url origin http://....."
+}
+
+isSupport()
+{
+    case $1 in
+	"meld"|"vimdiff"|"araxis"|"bc3"|"gdiff"|"opendiff")
+	    #	    ${slist0[*]})
+	    if [[ $1 == "gdiff" ]]; then
+		mtool="fugitive"
+	    else
+		mtool="$1"
+	    fi
+	    echo -e "git merge using \033[91m$mtool\033[0m"
+	    git config --global merge.tool $mtool
+	    echo ""
+	    echo "------------8<---"
+	    tail -4 ~/.gitconfig|grep --color -E 'tool =|$'
+	    ;;
+	"kdiff3")
+	    echo -e "git merge using \033[91mkdiff3\033[0m"    
+	    git config --global merge.tool kdiff3
+	    git config --global mergetool.kdiff3.cmd '"/Applications/kdiff3.app/Contents/MacOS/kdiff3" $BASE $LOCAL $REMOTE -o $MERGED'
+	    ;;
+	*) echo "$1 not support in current list..."
+	    exit
+	    ;;
+    esac 
+}
+
+
+isSupport0()
+{
+    case $1 in
+	"meld") 
+	    echo -e "git merge using \033[91mmeld\033[0m"    
+	    git config --global merge.tool meld
+	    ;;
+	"vimdiff")
+	    echo -e "git merge using \033[91mvimdiff\033[0m"    
+	    git config --global merge.tool vimdiff
+	    ;;
+	"kdiff3")
+	    echo -e "git merge using \033[91mkdiff3\033[0m"    
+	    git config --global merge.tool kdiff3
+	    git config --global mergetool.kdiff3.cmd '"/Applications/kdiff3.app/Contents/MacOS/kdiff3" $BASE $LOCAL $REMOTE -o $MERGED'
+	    ;;
+	"araxis")
+	    echo -e "git merge using \033[91araxis\033[0m"    
+	    git config --global merge.tool araxis
+	    ;;
+	"bc3")
+	    echo -e "git merge using \033[91Beycond Compare\033[0m"    
+	    git config --global merge.tool bc3
+	    ;;
+	*)
+	    echo -e "only { \033[92mvimdiff | meld | kdiff3 |bx \033[0m} support rightnow"
+	    exit
+    esac
+}
+
+isSupport $1

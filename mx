@@ -1,0 +1,29 @@
+#!/usr/bin/python
+ 
+import sys
+import os
+import subprocess
+ 
+if len(sys.argv) > 1:
+  left = os.path.abspath(sys.argv[1]);
+else:
+  left = ""
+ 
+if len(sys.argv) > 2:
+  right = os.path.abspath(sys.argv[2]);
+else:
+  right = ""
+ 
+if len(sys.argv) > 3:
+  mid = os.path.abspath(sys.argv[3]);
+else:
+  mid = ""
+ 
+
+MELDPATH = "/Applications/Meld.app"
+if mid == "":
+    arguments = " -n " + MELDPATH + " --args " + left + " " + right 
+    p = subprocess.Popen(['open', '-W', '-a',  MELDPATH, '--args', left, right],stdout=subprocess.PIPE)
+else:
+    arguments = " -n " + MELDPATH + " --args " + left + " " + right + " " + mid
+    p = subprocess.Popen(['open', '-W', '-a',  MELDPATH, '--args', left, right, mid],stdout=subprocess.PIPE)
